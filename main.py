@@ -1,17 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def loadDataSet(file_name):
-    dataMat = []
-    labelMat = []
+def loadDataSet():
+    x_train = np.load('./data/LR/train_data.npy')
+    y_train = np.load('./data/LR/train_target.npy')
+    x_test = np.load('./data/LR/test_data.npy')
+    y_test = np.load('./data/LR/test_target.npy')
 
-    with open(file_name) as f:
-        for line in f.readlines():
-            lineArr = line.strip().split()
-            dataMat.append([1.0,float(lineArr[0]),float(lineArr[1])])
-            labelMat.append(int(lineArr[2]))
-
-    return dataMat,labelMat
+    return x_train, y_train, x_test, y_test
 
 def sigmod(Z):
     return 1.0 / (1+ np.exp(-Z))
@@ -66,7 +62,6 @@ def stocGradAscent(dataSet,label):
     return weights
 
 def plotBestFit(dataSet, label, weights):
-
     xcord1 = []
     ycord1 = []
     xcord2 = []
@@ -98,20 +93,35 @@ def plotBestFit(dataSet, label, weights):
     plt.ylabel('Y')
     plt.show()
 
+def test(x_test, y_test, weights):
+    count = 0
+    total = len(x_test)
+    for i in range(total):
+        result = classifyVector(x_test[i], weights)
+        if (abs(result - y_test[i]) < 0.000001):    # 浮点数判断相等要注意细节
+            count += 1
+    return count/total
+
 def train():
-    dataSet, lable = loadDataSet('horse.txt')
-    weights = stocGradAscent(dataSet, lable)
+    x_train, y_train, x_test, y_test = loadDataSet()
+    # print(x_train, y_train)
+    weights = stocGradAscent(x_train, y_train)
     # weights = gradAscent(dataSet, lable)
-    plotBestFit(dataSet, lable, weights)
+    plotBestFit(x_train, y_train, weights)
+    # print(x_test, y_test)
+    acc = test(x_test, y_test, weights)
+    print('------acc------\n')
+    print('finnal acc in test:', acc)
 
-def classifyVector(intX, weights):
-
-    prob = sigmod(intX*weights)
-    # 二分类问题极大似然估计，概率分割点位于0.5处
-    if prob > 0.5:
+def classifyVector(x_test, weights):
+    x = x_test[1]
+    y = x_test[2]
+    pred = (-weights[0]-weights[1]*x)/weights[2]
+    # 考虑点在线的上方还是下方返回预测结果
+    if (pred > y):
         return 1.0
-    else:return 0.0
-
+    else:
+        return 0.0
 
 if __name__ == '__main__':
     train()
