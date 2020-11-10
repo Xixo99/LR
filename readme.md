@@ -2,7 +2,5 @@
 
 数据集为Horse-colic数据集，数据集来自2010年1月11日UCI机器学习数据库。如左图所示，我们只选择其中100个样本，每个样本中包含两个特征。
 
-采用一维线性分类。分类结果示意图大致如下：
-
-![实验结果](.\readme.assets\image-20201110190826373.png)
+采用一维线性分类。提供gradAscent和stocGradAscent两种优化方法。推荐使用stocGradAscent。
 
