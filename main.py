@@ -12,9 +12,6 @@ def loadDataSet():
 def sigmod(Z):
     return 1.0 / (1+ np.exp(-Z))
 
-def thanh(Z):
-    return (np.exp(Z) - np.exp(-Z)) / (np.exp(Z) + np.exp(-Z))
-
 def gradAscent(dataSet,label):
     dataMat = np.mat(dataSet)   #  (m,n)
     m, n = np.shape(dataMat)
